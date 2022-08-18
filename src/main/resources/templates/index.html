@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>grabbing</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <!-- 引入 layui.css -->
+    <link href="https://heerey525.github.io/layui-v2.4.3/layui/css/layui.css" rel="stylesheet">
+
+    <!-- 引入 layui.js -->
+    <script src="https://heerey525.github.io/layui-v2.4.3/layui/layui.js"></script>
+    <style>
+        .form-cls-test {
+            margin-top: 5%;
+        }
+    </style>
+</head>
+<body>
+<div class="form-cls-test">
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">URL</label>
+            <div class="layui-input-block">
+                <input id="url" type="text" name="title" required lay-verify="required"
+                       placeholder="Please type URL，for example http://www.***.com" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">Text area</label>
+            <div class="layui-input-block">
+                <textarea id="content" name="desc"
+                          placeholder="Please type content which is anything U want to grab and that should be contained by the browser"
+                          class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">Return</label>
+            <div class="layui-input-block">
+                <textarea id="contentResult" placeholder="" disabled
+                          class="layui-textarea" style="height: 400px"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-mid layui-word-aux"></div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button id="submitButton" onclick="submitInfo()" class="layui-btn" lay-submit lay-filter="formDemo">submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<script>
+
+    function submitInfo() {
+        //Demo
+        layui.use('form', function () {
+            var form = layui.form;
+            //提交
+            form.on('submit(formDemo)', function (data) {
+                layer.msg(JSON.stringify(data.field));
+                return false;
+            });
+        });
+
+        if ($('#url').val()==null||$('#url').val()==undefined||$('#url').val()==""){
+            layer.msg("please input URL");
+            return;
+        }
+        $.ajax({
+            url: "/grab/v1/test", // path
+            type: "GET", //method
+            data: {"content": $('#content').val(), "url": $('#url').val()},
+            dataType: "json",
+            async:false,
+            success: function (data) {
+                console.log(data)
+                alert(data.body)
+                $('#contentResult').val(data.body)
+            },//fallback fun as succeed
+            error: function (msg) {
+               alert(msg)
+            }//fallback fun as succeed//fallback fun as succeed
+        });
+    }
+</script>
+</body>
+</html>
